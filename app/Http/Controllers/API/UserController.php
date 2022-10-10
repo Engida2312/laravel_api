@@ -18,7 +18,7 @@ class UserController extends Controller
         $formFields = $request->validate([
             'name'=> ['required', 'min:3'],
             'email'=> ['required', 'email', Rule::unique('users', 'email')],
-            'password' => 'required|min:6',
+            'password' => 'required|min:8',
             'role',
         ]);
         // hash password
@@ -37,19 +37,25 @@ class UserController extends Controller
         ]);
     }
     public function login(Request $request){
-        
-        if(!Auth::attempt($request->only('user', 'pwd'))){
+        $email = $request->user;
+        $password = $request->pwd;
+        // if(!Auth::attempt($request->only('email', 'password'))){
+
+        if(!Auth::attempt(['email'=> $email,  'password'=> $password]))
+        {
             return response([
                 'message' => 'Invalid credentials',
             ], Response::HTTP_UNAUTHORIZED);
         }
-        
+        $user = Auth::user();
         // create token
         $token = $user->createToken('token')->plainTextToken;
         // create cookie
         $cookie = cookie('jwt', $token, 60*24);//1 day
+
         return response([   
             'message'=> 'success',
+            'cookie'=>$cookie
         ])->withCookie($cookie);
     }
 
