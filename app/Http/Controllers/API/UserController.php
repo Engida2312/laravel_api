@@ -17,18 +17,24 @@ class UserController extends Controller
     public function register(Request $request){
         // validation
         $formFields = $request->validate([
-            'name'=> ['required', 'min:3'],
+            'firstname'=> ['required', 'min:3'],
+            'lastname'=> ['required', 'min:3'],
             'email'=> ['required', 'email', Rule::unique('users', 'email')],
             'password' => 'required|min:8',
             'role',
+            'github',
+            'linkedin',
         ]);
+
         // hash password
         $formFields['password'] = bcrypt($formFields['password']);
+        // assign default value
         $formFields['role'] = 'user';
-
+        $formFields['github'] = '';
+        $formFields['linkedin'] = '';
+        
         // create user 
         $user = User::create($formFields);
-        
         // login
         if($user){
             // create token
@@ -37,11 +43,12 @@ class UserController extends Controller
             $cookie = cookie('jwt', $token, 60*24);//1 day
     
             return response([  
+                'id' => $user->id,
                 'status'=>200,  
                 'message'=> 'User created successfully',
-                'name' => $user->name,
+                'firstname' => $user->firstname,
+                'lastname' => $user->lastname,
                 'email' => $user->email,
-                'id' => $user->id,
                 'token'=>$token
             ])->withCookie($cookie);
         }
@@ -51,23 +58,29 @@ class UserController extends Controller
         $email = $request->email;
         $password = $request->password;
         // if(!Auth::attempt($request->only('email', 'password'))){
-
         if(!Auth::attempt(['email'=> $email,  'password'=> $password]))
         {
             return response([
                 'message' => 'Invalid credentials',
             ], Response::HTTP_UNAUTHORIZED);
         }
+
         $user = Auth::user();
+
         // create token
         $token = $user->createToken('token')->plainTextToken;
+
         // create cookie
         $cookie = cookie('jwt', $token, 60*24);//1 day
 
         return response([   
             'message'=> 'success',
-            'user' => $user,
-            'token'=>$token
+            'id' => $user->id,
+            'status'=>200,  
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+            'email' => $user->email,
+            'token'=>$token,
         ])->withCookie($cookie);
     }
 
@@ -126,8 +139,6 @@ class UserController extends Controller
             $data = User::find($id);
             if($data)
             {
-
-                
                 $data->firstname= $request->input('firstname');
                 $data->lastname= $request->input('lastname');
                 $data->github= $request->input('github');
