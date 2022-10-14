@@ -27,18 +27,28 @@ class UserController extends Controller
 
         // create user 
         $user = User::create($formFields);
+        
         // login
-        // auth()->login($user);
-
-        return response()->json([
-            'status'=>200, 
-            'message'=>'User created successfully',
-            'user'=> $user,
-        ]);
+        if($user){
+            // create token
+            $token = $user->createToken('token')->plainTextToken;
+            // create cookie
+            $cookie = cookie('jwt', $token, 60*24);//1 day
+    
+            return response([  
+                'status'=>200,  
+                'message'=> 'User created successfully',
+                'name' => $user->name,
+                'email' => $user->email,
+                'id' => $user->id,
+                'token'=>$token
+            ])->withCookie($cookie);
+        }
     }
+
     public function login(Request $request){
-        $email = $request->user;
-        $password = $request->pwd;
+        $email = $request->email;
+        $password = $request->password;
         // if(!Auth::attempt($request->only('email', 'password'))){
 
         if(!Auth::attempt(['email'=> $email,  'password'=> $password]))
@@ -55,7 +65,8 @@ class UserController extends Controller
 
         return response([   
             'message'=> 'success',
-            'cookie'=>$cookie
+            'user' => $user,
+            'token'=>$token
         ])->withCookie($cookie);
     }
 
