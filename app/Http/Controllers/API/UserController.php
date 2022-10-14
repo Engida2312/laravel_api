@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Symfony\Component\CssSelector\Node\FunctionNode;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -80,4 +81,73 @@ class UserController extends Controller
             'message'=> 'success'
         ])->withCookie($cookie);
     }
-}
+
+    public function edit($id)
+    {
+        $data = User::find($id);
+        if($data)
+        {
+            return response()->json([
+                'status'=> 200,
+                'user' => $data,
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'status'=> 404,
+                'message' => 'No User ID Found',
+            ]);
+        }
+
+    }
+
+    public function update(Request $request, $id)
+    {
+        // $validator = Validator::make($request->all(),[
+        //     'firstname'=>'required|max:191',
+        //     'lastname'=>'required|max:191',
+        //     'github'=>'required|email|max:191',
+        //     'linkedin'=>'required|email|max:191',
+        //     'email'=>'required|email|max:191',
+        //     // 'phone'=>'required|max:10|min:10',
+        // ]);
+
+        // if($validator->fails())
+        // {
+        //     return response()->json([
+        //         'status'=> 422,
+        //         'validationErrors'=>  $validator->messages(),
+        //     ]);
+        // }
+        // else
+        // {
+
+            $data = User::find($id);
+            if($data)
+            {
+
+                
+                $data->firstname= $request->input('firstname');
+                $data->lastname= $request->input('lastname');
+                $data->github= $request->input('github');
+                $data->linkedin= $request->input('linkedin');
+                // $data->password= $request->input('password');
+                $data->email= $request->input('email');
+                $data->update();
+
+                return response()->json([
+                    'status'=> 200,
+                    'message'=>'User Updated Successfully',
+                ]);
+            }
+            else
+            {
+                return response()->json([
+                    'status'=> 404,
+                    'message' => 'No user ID Found',
+                ]);
+            }
+        }
+    }
+// }
