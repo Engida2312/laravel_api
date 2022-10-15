@@ -80,6 +80,7 @@ class UserController extends Controller
             'firstname' => $user->firstname,
             'lastname' => $user->lastname,
             'email' => $user->email,
+            'role' => $user->role,
             'token'=>$token,
         ])->withCookie($cookie);
     }
