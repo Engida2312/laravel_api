@@ -15,8 +15,8 @@ class CreateCategoryTable extends Migration
     {
         Schema::create('category', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('discription');
+            $table->string('title')->unique();
+            $table->string('discription')->nullable();
             $table->timestamps();
         });
     }
@@ -30,4 +30,6 @@ class CreateCategoryTable extends Migration
     {
         Schema::dropIfExists('category');
     }
+    
+    
 }
