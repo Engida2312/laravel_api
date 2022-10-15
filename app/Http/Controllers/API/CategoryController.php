@@ -46,4 +46,12 @@ class CategoryController extends Controller
         ]);
 
     }
+    public function delete($id){
+        $category = Category::find($id);
+        $category->delete();
+        return response()-> json([
+            'status'=> 200,
+            'message'=>'category delated successfully'
+        ]);
+    }
 }
