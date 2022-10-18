@@ -34,8 +34,12 @@ Route::delete('/delete-category/{id}', [CategoryController::class, 'delete']);
 Route::post( '/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 
+
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/user', [UserController::class, 'user']);
+    
+    Route::get('/users', [UserController::class, 'users']);
+
     Route::post('/logout', [UserController::class, 'logout']);
 });
  
