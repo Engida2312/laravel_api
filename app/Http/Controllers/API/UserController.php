@@ -49,6 +49,8 @@ class UserController extends Controller
                 'firstname' => $user->firstname,
                 'lastname' => $user->lastname,
                 'email' => $user->email,
+                'github' => $user->github,
+                'linkedin' => $user->linkedin,
                 'token'=>$token
             ])->withCookie($cookie);
         }
@@ -80,6 +82,9 @@ class UserController extends Controller
             'firstname' => $user->firstname,
             'lastname' => $user->lastname,
             'email' => $user->email,
+            'github' => $user->github,
+            'linkedin' => $user->linkedin,
+            'role' => $user->role,
             'token'=>$token,
         ])->withCookie($cookie);
     }
@@ -87,11 +92,14 @@ class UserController extends Controller
     public function user(){
         return Auth::user();
     }
+    public function users(){
+        return User::all();
+    }
 
     public function logout(Request $request){
         $cookie = Cookie::forget('jwt');
         return response([
-            'message'=> 'success'
+            'message'=> 'success'       
         ])->withCookie($cookie);
     }
 
