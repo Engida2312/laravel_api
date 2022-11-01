@@ -125,14 +125,14 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        // $validator = Validator::make($request->all(),[
-        //     'firstname'=>'required|max:191',
-        //     'lastname'=>'required|max:191',
-        //     'github'=>'required|email|max:191',
-        //     'linkedin'=>'required|email|max:191',
-        //     'email'=>'required|email|max:191',
-        //     // 'phone'=>'required|max:10|min:10',
-        // ]);
+        $validator = Validator::make($request->all(),[
+            'firstname'=>'required|max:191',
+            'lastname'=>'required|max:191',
+            'github'=>'required|email|max:191',
+            'linkedin'=>'required|email|max:191',
+            'email'=>'required|email|max:191',
+            
+        ]);
 
         // if($validator->fails())
         // {

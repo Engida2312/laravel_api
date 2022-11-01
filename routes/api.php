@@ -43,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/logout', [UserController::class, 'logout']);
 });
  
-
+//update profile
 Route::get('/editprofile/{id}', [UserController::class, 'edit']);
 Route::post('/updateprofile/{id}', [UserController::class, 'update']);
 
