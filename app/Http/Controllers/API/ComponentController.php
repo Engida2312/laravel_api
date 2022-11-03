@@ -19,6 +19,8 @@ class ComponentController extends Controller
         $component = new Component;
         $component->category_id = $request->input('category_id');
         $component->user_id = $request->input('user_id');
+        $component->name = $request->input('name');
+        $component->discription = $request->input('discription');
         $component->viewes = $request->input('viewes');
         $component->likes = $request->input('likes');
         $component->code_referance = $request->input('code_referance');

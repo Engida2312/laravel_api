@@ -21,7 +21,7 @@ class CreateComponentTable extends Migration
             $table->string('discription')->nullable();
             $table->integer('viewes')->nullable();
             $table->integer('likes')->nullable();
-            $table->string('code_referance')->unique();
+            $table->text('code_referance');
             $table->timestamps();
             
         });

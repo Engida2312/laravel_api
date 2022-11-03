@@ -54,4 +54,20 @@ class CategoryController extends Controller
             'message'=>'category delated successfully'
         ]);
     }
+    public function searchCategory($searchQuery){
+        $category = Category::where([
+            ['title', '!=', NULL],[
+                function($query) use($searchQuery){
+                        $query->orWhere('title', 'LIKE', '%'.$searchQuery.'%')->get();
+                }
+            ]
+        ])
+        ->orderBy("id", "desc")
+        ->paginate(10);
+
+        return response()-> json([
+            'status'=> 200,
+            'message'=>$category,
+        ]);
+    }
 }
