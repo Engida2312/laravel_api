@@ -50,11 +50,11 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/logout', [UserController::class, 'logout']);
     Route::get('/dashboard', [DashboardController::class, 'dashboard']);
     // Route::get('/components/all', [ComponentController::class, 'getComponent']);
+    //update profile
+    Route::get('/editprofile/{id}', [UserController::class, 'edit']);
+    Route::post('/updateprofile/{id}', [UserController::class, 'update']);
 });
 
-//update profile
-Route::get('/editprofile/{id}', [UserController::class, 'edit']);
-Route::post('/updateprofile/{id}', [UserController::class, 'update']);
 
 /////avatar route
 Route::get('/upload/{id}', [AvatarController::class, 'view']);

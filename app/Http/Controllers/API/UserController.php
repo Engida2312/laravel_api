@@ -118,14 +118,14 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(),[
-            'firstname'=>'required|max:191',
-            'lastname'=>'required|max:191',
-            'github'=>'required|email|max:191',
-            'linkedin'=>'required|email|max:191',
-            'email'=>'required|email|max:191',
+        // $validator = Validator::make($request->all(),[
+        //     'firstname'=>'required|max:191',
+        //     'lastname'=>'required|max:191',
+        //     'github'=>'required|email|max:191',
+        //     'linkedin'=>'required|email|max:191',
+        //     'email'=>'required|email|max:191',
             
-        ]);
+        // ]);
 
         $data = User::find($id);
         if($data)
@@ -136,6 +136,7 @@ class UserController extends Controller
             $data->linkedin= $request->input('linkedin');
             // $data->password= $request->input('password');
             $data->email= $request->input('email');
+            
             $data->update();
 
             return response()->json([
