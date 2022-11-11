@@ -18,6 +18,7 @@ class ComponentController extends Controller
             'component'=>$component,
             'totalComponents' => $numOfComponents,
             'numOfPages' => $numOfPages,
+            'component'=> $component,
         ]);
     }
     public function add(Request $request){
