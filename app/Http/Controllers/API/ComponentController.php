@@ -10,9 +10,13 @@ class ComponentController extends Controller
 {
     public function getComponent(){
         $component = Component::all();
-        return response()-> json([
+        $numOfComponents = Component::count();
+        $numOfPages = $numOfComponents / 10 ;
+        return response()->json([
             'status'=> 200,
-            'component'=> $component
+            'component'=>$component,
+            'totalComponents' => $numOfComponents,
+            'numOfPages' => $numOfPages,
         ]);
     }
     public function add(Request $request){

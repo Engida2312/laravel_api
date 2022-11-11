@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\ComponentController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\DashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AvatarController;
@@ -34,22 +35,19 @@ Route::delete('/delete-category/{id}', [CategoryController::class, 'delete']);
 Route::post( '/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 
+Route::get('/users', [UserController::class, 'users']);
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/user', [UserController::class, 'user']);
-    
-    Route::get('/users', [UserController::class, 'users']);
-
+    Route::get('/user/profile/{id}', [UserController::class, 'singleUser']);
     Route::post('/logout', [UserController::class, 'logout']);
+    Route::get('/dashboard', [DashboardController::class, 'dashboard']);
+    // Route::get('/components/all', [ComponentController::class, 'getComponent']);
 });
- 
+
 //update profile
 Route::get('/editprofile/{id}', [UserController::class, 'edit']);
 Route::post('/updateprofile/{id}', [UserController::class, 'update']);
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
 /////avatar route
 Route::get('/upload/{id}', [AvatarController::class, 'view']);
