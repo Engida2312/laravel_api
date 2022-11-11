@@ -39,19 +39,10 @@ class UserController extends Controller
         if($user){
             // create token
             $token = $user->createToken('token')->plainTextToken;
-            // create cookie
-            $cookie = cookie('jwt', $token, 1);//1 day
     
-            return response([
-                'status'=>200,  
-                'message'=> 'User created successfully',
-                'id' => $user->id,
-                'firstname' => $user->firstname,
-                'lastname' => $user->lastname,
-                'email' => $user->email,
-                'github' => $user->github,
-                'linkedin' => $user->linkedin,
-            ])->withCookie($cookie);
+            // create cookie
+            $cookie = cookie('jwt', $token, 60);//1 day;
+            return response($user)->withCookie($cookie);
         }
     }
 

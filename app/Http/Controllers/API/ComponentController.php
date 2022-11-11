@@ -10,7 +10,10 @@ use App\Models\Component;
 class ComponentController extends Controller
 {
     public function getComponent(){
-        $component = Component::all();
+        $component = Component::join('users', 'users.id', '=', 'component.user_id')
+        ->get(['component.id','component.category_id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
+        'component.created_at','component.updated_at', 'users.firstname']);
+   
         $numOfComponents = Component::count();
         $numOfPages = $numOfComponents / 10 ;
         return response()->json([
@@ -21,6 +24,7 @@ class ComponentController extends Controller
             'component'=> $component,
         ]);
     }
+
     public function add(Request $request){
          // validation
          $formFields = $request->validate([
@@ -59,11 +63,10 @@ class ComponentController extends Controller
 
     }
     public function singleComponent($id){
-
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
         ->where('component.id',$id)
-        ->get(['component.id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
+        ->get(['component.id','component.category_id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
         'component.created_at','component.updated_at', 'users.firstname', 'category.title','category.discription']);
         return response()-> json([
             'status'=> 200,
@@ -88,6 +91,7 @@ class ComponentController extends Controller
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
         ->where('component.category_id',$id)
+        ->orderBy('component.viewes', 'desc')
         ->get(['component.id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
         'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
         return response()-> json([
@@ -95,6 +99,7 @@ class ComponentController extends Controller
             'message'=> $component,
         ]);
     }
+
     public function singleUserComponent($id){
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
@@ -156,7 +161,6 @@ class ComponentController extends Controller
             }
         }
         
-        
         $component->update();
 
         return response()-> json([
@@ -185,8 +189,5 @@ class ComponentController extends Controller
                 'message'=>'not able to find the component'
             ]);
         }
-        
-        
-        
     }
 }

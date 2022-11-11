@@ -19,6 +19,7 @@ use App\Http\Controllers\API\AvatarController;
 |
 */
 
+Route::get('/homeComponent', [DashboardController::class, 'limitedComponents']);
 //component route
 Route::post('/add-component', [ComponentController::class, 'add']);
 Route::get('/component', [ComponentController::class, 'getComponent']);
