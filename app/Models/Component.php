@@ -12,6 +12,8 @@ class Component extends Model
     protected $fillable = [
         'category_id',
         'user_id',
+        'name',
+        'discription',
         'viewes',
         'likes',
         'code_referance',
