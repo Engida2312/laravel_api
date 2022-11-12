@@ -67,7 +67,7 @@ class CategoryController extends Controller
 
         return response()-> json([
             'status'=> 200,
-            'message'=>$category,
+            'message'=>$category
         ]);
     }
 }
