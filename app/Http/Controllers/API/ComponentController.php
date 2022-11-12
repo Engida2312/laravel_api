@@ -58,8 +58,8 @@ class ComponentController extends Controller
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
         ->where('component.id',$id)
-        ->get(['component.name','component.discription','component.viewes','component.likes','component.code_referance',
-        'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
+        ->get(['component.id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
+        'component.created_at','component.updated_at', 'users.firstname', 'category.title','category.discription']);
         return response()-> json([
             'status'=> 200,
             'message'=> $component,
@@ -83,7 +83,7 @@ class ComponentController extends Controller
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
         ->where('component.category_id',$id)
-        ->get(['component.name','component.discription','component.viewes','component.likes','component.code_referance',
+        ->get(['component.id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
         'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
         return response()-> json([
             'status'=> 200,
@@ -94,7 +94,7 @@ class ComponentController extends Controller
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
         ->where('component.user_id',$id)
-        ->get(['component.name','component.discription','component.viewes','component.likes','component.code_referance',
+        ->get(['component.id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
         'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
         return response()-> json([
             'status'=> 200,
