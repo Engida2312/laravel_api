@@ -59,7 +59,7 @@ class ComponentController extends Controller
         ->join('category', 'category.id', '=', 'component.category_id')
         ->where('component.id',$id)
         ->get(['component.id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
-        'component.created_at','component.updated_at', 'users.firstname', 'category.title','category.discription']);
+        'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
         return response()-> json([
             'status'=> 200,
             'message'=> $component,
