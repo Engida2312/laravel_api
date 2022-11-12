@@ -55,7 +55,11 @@ class ComponentController extends Controller
     }
     public function singleComponent($id){
 
-        $component = Component::find($id);
+        $component = Component::join('users', 'users.id', '=', 'component.user_id')
+        ->join('category', 'category.id', '=', 'component.category_id')
+        ->where('component.id',$id)
+        ->get(['component.name','component.discription','component.viewes','component.likes','component.code_referance',
+        'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
         return response()-> json([
             'status'=> 200,
             'message'=> $component,
@@ -76,14 +80,22 @@ class ComponentController extends Controller
         ]);
     }
     public function singleCategoryComponent($id){
-        $component = Component::where('category_id',$id)->get();
+        $component = Component::join('users', 'users.id', '=', 'component.user_id')
+        ->join('category', 'category.id', '=', 'component.category_id')
+        ->where('component.category_id',$id)
+        ->get(['component.name','component.discription','component.viewes','component.likes','component.code_referance',
+        'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
         return response()-> json([
             'status'=> 200,
             'message'=> $component,
         ]);
     }
     public function singleUserComponent($id){
-        $component = Component::where('user_id',$id)->get();
+        $component = Component::join('users', 'users.id', '=', 'component.user_id')
+        ->join('category', 'category.id', '=', 'component.category_id')
+        ->where('component.user_id',$id)
+        ->get(['component.name','component.discription','component.viewes','component.likes','component.code_referance',
+        'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
         return response()-> json([
             'status'=> 200,
             'message'=> $component,
