@@ -10,7 +10,7 @@ use App\Http\Controllers\API\AvatarController;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| API Routes API
 |--------------------------------------------------------------------------
 |
 | Here is where you can register API routes for your application. These
