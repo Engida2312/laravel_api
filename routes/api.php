@@ -28,6 +28,7 @@ Route::get('/singleCategory-component/{id}', [ComponentController::class, 'singl
 Route::get('/singleUser-component/{id}', [ComponentController::class, 'singleUserComponent']);
 Route::get('/component/code/{id}', [ComponentController::class, 'getCode']);
 Route::get('/component/css/{id}', [ComponentController::class, 'getCss']);
+Route::get('/component/html/{id}', [ComponentController::class, 'getHtml']);
 Route::put('/update-component/{id}', [ComponentController::class, 'updateComponent']);
 Route::put('/update-componentview/{id}', [ComponentController::class, 'updateComponentview']);
 Route::put('/update-componentlike/{id}', [ComponentController::class, 'updateComponentlike']);
