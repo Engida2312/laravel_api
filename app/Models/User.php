@@ -49,10 +49,10 @@ class User extends Authenticatable
 
 
     public function permissions(){
-        return this->belongsToMany(Permission::class);
+        return $this->belongsToMany(Permission::class);
     }
     public function roles(){
-        return this->belongsToMany(Role::class);
+        return $this->belongsToMany(Role::class);
     }
 
     public function userHasRole($role_name){

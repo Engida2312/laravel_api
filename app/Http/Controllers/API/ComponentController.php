@@ -54,6 +54,7 @@ class ComponentController extends Controller
         if($component->save()){
             Storage::disk('public')->put('/Js/'.$string.'.js' , $request->input('code'));
             Storage::disk('public')->put('/Css/'.$string.'.css' , $request->input('css'));
+            Storage::disk('public')->put('/Html/'.$string.'.html' , $request->input('html'));
         };
 
         return response()-> json([
@@ -74,14 +75,34 @@ class ComponentController extends Controller
         ]);
     }
     public function getCode($id){
-        $component = Storage::disk('public')->get('/js/'.$id.'.js');
+        if(Storage::disk('public')->exists('/Js/'.$id.'.js')){
+            $component = Storage::disk('public')->get('/Js/'.$id.'.js');
+        }else{
+            $component = "";
+        }
         return response()-> json([
             'status'=> 200,
             'message'=> $component,
         ]);
     }
     public function getCss($id){
-        $component = Storage::disk('public')->get('/Css/'.$id.'.css');
+        if(Storage::disk('public')->exists('/Css/'.$id.'.css')){
+            $component = Storage::disk('public')->get('/Css/'.$id.'.css');
+        }else{
+            $component = "";
+        }
+       
+        return response()-> json([
+            'status'=> 200,
+            'message'=> $component,
+        ]);
+    }
+    public function getHtml($id){
+        if(Storage::disk('public')->exists('/Html/'.$id.'.html')){
+            $component = Storage::disk('public')->get('/Html/'.$id.'.html');
+        }else{
+            $component = "";
+        }
         return response()-> json([
             'status'=> 200,
             'message'=> $component,
@@ -160,6 +181,15 @@ class ComponentController extends Controller
                 $component->code_referance = $string;
             }
         }
+        if($request->input('html')){
+            if(Storage::disk('public')->exists('/Html/'.$component->code_referance.'.html')){
+                Storage::disk('public')->put('/Html/'.$component->code_referance.'.html', $request->input('html'));
+                $component->code_referance = $component->code_referance;
+            }else{
+                Storage::disk('public')->put('/Html/'.$string.'.html' , $request->input('html'));
+                $component->code_referance = $string;
+            }
+        }
         
         $component->update();
 
@@ -177,6 +207,9 @@ class ComponentController extends Controller
             }
             if(Storage::disk('public')->exists('/Css/'.$component->code_referance.'.css')){
                 Storage::disk('public')->delete('/Css/'.$component->code_referance.'.css');
+            }
+            if(Storage::disk('public')->exists('/Html/'.$component->code_referance.'.html')){
+                Storage::disk('public')->delete('/Html/'.$component->code_referance.'.html');
             }
             $component->delete();
                 return response()-> json([
