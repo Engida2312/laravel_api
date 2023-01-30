@@ -69,45 +69,77 @@ class ComponentController extends Controller
         ->where('component.id',$id)
         ->get(['component.id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
         'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
-        return response()-> json([
-            'status'=> 200,
-            'message'=> $component,
-        ]);
+
+        if($component){
+            // error_log("here".$component[0]->code_referance);
+
+            $comId = $component[0]->code_referance;
+
+            if(Storage::disk('public')->exists('/Html/'.$comId.'.html')){
+                $componentHTML = Storage::disk('public')->get('/Html/'.$comId.'.html');
+            }else{
+                $componentHTML = "";
+            }
+            if(Storage::disk('public')->exists('/Css/'.$comId.'.css')){
+                $componentCSS = Storage::disk('public')->get('/Css/'.$comId.'.css');
+            }else{
+                $componentCSS = "";
+            }
+            if(Storage::disk('public')->exists('/Js/'.$comId.'.js')){
+                $componentJS = Storage::disk('public')->get('/Js/'.$comId.'.js');
+            }else{
+                $componentJS = "";
+            }
+    
+            $componentCode = [
+                "HTML" => $componentHTML,
+                "CSS" => $componentCSS,
+                "JS" => $componentJS,
+            ];
+    
+            return response()-> json([
+                'status'=> 200,
+                'message'=> $component,
+                'code' => $componentCode,
+            ]);
+        }else{
+            return response()-> json([
+                'status'=> 200,
+                'message'=> "",
+                'code' => "",
+            ]);
+        }
+
     }
     public function getCode($id){
-        if(Storage::disk('public')->exists('/Js/'.$id.'.js')){
-            $component = Storage::disk('public')->get('/Js/'.$id.'.js');
-        }else{
-            $component = "";
-        }
-        return response()-> json([
-            'status'=> 200,
-            'message'=> $component,
-        ]);
-    }
-    public function getCss($id){
-        if(Storage::disk('public')->exists('/Css/'.$id.'.css')){
-            $component = Storage::disk('public')->get('/Css/'.$id.'.css');
-        }else{
-            $component = "";
-        }
-       
-        return response()-> json([
-            'status'=> 200,
-            'message'=> $component,
-        ]);
-    }
-    public function getHtml($id){
         if(Storage::disk('public')->exists('/Html/'.$id.'.html')){
-            $component = Storage::disk('public')->get('/Html/'.$id.'.html');
+            $componentHTML = Storage::disk('public')->get('/Html/'.$id.'.html');
         }else{
-            $component = "";
+            $componentHTML = "";
         }
+        if(Storage::disk('public')->exists('/Css/'.$id.'.css')){
+            $componentCSS = Storage::disk('public')->get('/Css/'.$id.'.css');
+        }else{
+            $componentCSS = "";
+        }
+        if(Storage::disk('public')->exists('/Js/'.$id.'.js')){
+            $componentJS = Storage::disk('public')->get('/Js/'.$id.'.js');
+        }else{
+            $componentJS = "";
+        }
+
+        $component = [
+            "HTML" => $componentHTML,
+            "CSS" => $componentCSS,
+            "JS" => $componentJS,
+        ];
+
         return response()-> json([
             'status'=> 200,
             'message'=> $component,
         ]);
     }
+
     public function singleCategoryComponent($id){
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
