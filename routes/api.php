@@ -60,3 +60,7 @@ Route::middleware('auth:sanctum')->group(function(){
 Route::get('/upload/{id}', [AvatarController::class, 'view']);
 Route::post('/upload/{id}', [AvatarController::class, 'store']);
 Route::put('/uploadImage', [AvatarController::class, 'uploadeImage']);
+
+
+///
+Route::post('/upload-image', [UserController::class, 'uploadImage'])->middleware('auth:sanctum');
