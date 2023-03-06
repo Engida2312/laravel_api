@@ -62,5 +62,9 @@ Route::post('/upload/{id}', [AvatarController::class, 'store']);
 Route::put('/uploadImage', [AvatarController::class, 'uploadeImage']);
 
 
-///
-Route::post('/upload-image', [UserController::class, 'uploadImage'])->middleware('auth:sanctum');
+///comment
+Route::prefix('components/{componentId}')->group(function () {
+    Route::get('comments', 'CommentController@index');
+    Route::post('comments/{id}', 'CommentController@store');
+});
+
