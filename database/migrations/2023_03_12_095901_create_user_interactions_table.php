@@ -16,7 +16,7 @@ class CreateUserInteractionsTable extends Migration
         Schema::create('user_interactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->json('interactions')->nullable();
+            $table->string('interactions')->nullable();
             $table->timestamps();
         });
     }

@@ -62,4 +62,5 @@ Route::get('/upload/{id}', [AvatarController::class, 'view']);
 Route::post('/upload/{id}', [AvatarController::class, 'store']);
 
 //user Interaction 
-Route::put('/user/interaction', [UserInteractionController::class, 'store']);
+Route::post('/user/interaction', [UserInteractionController::class, 'store']);
+Route::get('/singelUser/interaction/{id}', [UserInteractionController::class, 'singleUserInteraction']);
