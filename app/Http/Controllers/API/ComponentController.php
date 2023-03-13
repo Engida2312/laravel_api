@@ -10,12 +10,21 @@ use App\Models\Component;
 class ComponentController extends Controller
 {
     public function getComponent(){
-        $component = Component::all();
-        return response()-> json([
+        $component = Component::join('users', 'users.id', '=', 'component.user_id')
+        ->get(['component.id','component.category_id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
+        'component.created_at','component.updated_at', 'users.firstname']);
+   
+        $numOfComponents = Component::count();
+        $numOfPages = $numOfComponents / 10 ;
+        return response()->json([
             'status'=> 200,
+            'component'=>$component,
+            'totalComponents' => $numOfComponents,
+            'numOfPages' => $numOfPages,
             'component'=> $component,
         ]);
     }
+
     public function add(Request $request){
          // validation
          $formFields = $request->validate([
@@ -45,6 +54,7 @@ class ComponentController extends Controller
         if($component->save()){
             Storage::disk('public')->put('/Js/'.$string.'.js' , $request->input('code'));
             Storage::disk('public')->put('/Css/'.$string.'.css' , $request->input('css'));
+            Storage::disk('public')->put('/Html/'.$string.'.html' , $request->input('html'));
         };
 
         return response()-> json([
@@ -54,35 +64,87 @@ class ComponentController extends Controller
 
     }
     public function singleComponent($id){
-
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
         ->where('component.id',$id)
         ->get(['component.id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
         'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
-        return response()-> json([
-            'status'=> 200,
-            'message'=> $component,
-        ]);
+
+        if($component){
+            // error_log("here".$component[0]->code_referance);
+
+            $comId = $component[0]->code_referance;
+
+            if(Storage::disk('public')->exists('/Html/'.$comId.'.html')){
+                $componentHTML = Storage::disk('public')->get('/Html/'.$comId.'.html');
+            }else{
+                $componentHTML = "";
+            }
+            if(Storage::disk('public')->exists('/Css/'.$comId.'.css')){
+                $componentCSS = Storage::disk('public')->get('/Css/'.$comId.'.css');
+            }else{
+                $componentCSS = "";
+            }
+            if(Storage::disk('public')->exists('/Js/'.$comId.'.js')){
+                $componentJS = Storage::disk('public')->get('/Js/'.$comId.'.js');
+            }else{
+                $componentJS = "";
+            }
+    
+            $componentCode = [
+                "HTML" => $componentHTML,
+                "CSS" => $componentCSS,
+                "JS" => $componentJS,
+            ];
+    
+            return response()-> json([
+                'status'=> 200,
+                'message'=> $component,
+                'code' => $componentCode,
+            ]);
+        }else{
+            return response()-> json([
+                'status'=> 200,
+                'message'=> "",
+                'code' => "",
+            ]);
+        }
+
     }
     public function getCode($id){
-        $component = Storage::disk('public')->get('/js/'.$id.'.js');
+        if(Storage::disk('public')->exists('/Html/'.$id.'.html')){
+            $componentHTML = Storage::disk('public')->get('/Html/'.$id.'.html');
+        }else{
+            $componentHTML = "";
+        }
+        if(Storage::disk('public')->exists('/Css/'.$id.'.css')){
+            $componentCSS = Storage::disk('public')->get('/Css/'.$id.'.css');
+        }else{
+            $componentCSS = "";
+        }
+        if(Storage::disk('public')->exists('/Js/'.$id.'.js')){
+            $componentJS = Storage::disk('public')->get('/Js/'.$id.'.js');
+        }else{
+            $componentJS = "";
+        }
+
+        $component = [
+            "HTML" => $componentHTML,
+            "CSS" => $componentCSS,
+            "JS" => $componentJS,
+        ];
+
         return response()-> json([
             'status'=> 200,
             'message'=> $component,
         ]);
     }
-    public function getCss($id){
-        $component = Storage::disk('public')->get('/Css/'.$id.'.css');
-        return response()-> json([
-            'status'=> 200,
-            'message'=> $component,
-        ]);
-    }
+
     public function singleCategoryComponent($id){
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
         ->where('component.category_id',$id)
+        ->orderBy('component.viewes', 'desc')
         ->get(['component.id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
         'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
         return response()-> json([
@@ -90,6 +152,7 @@ class ComponentController extends Controller
             'message'=> $component,
         ]);
     }
+
     public function singleUserComponent($id){
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
@@ -150,7 +213,15 @@ class ComponentController extends Controller
                 $component->code_referance = $string;
             }
         }
-        
+        if($request->input('html')){
+            if(Storage::disk('public')->exists('/Html/'.$component->code_referance.'.html')){
+                Storage::disk('public')->put('/Html/'.$component->code_referance.'.html', $request->input('html'));
+                $component->code_referance = $component->code_referance;
+            }else{
+                Storage::disk('public')->put('/Html/'.$string.'.html' , $request->input('html'));
+                $component->code_referance = $string;
+            }
+        }
         
         $component->update();
 
@@ -169,6 +240,9 @@ class ComponentController extends Controller
             if(Storage::disk('public')->exists('/Css/'.$component->code_referance.'.css')){
                 Storage::disk('public')->delete('/Css/'.$component->code_referance.'.css');
             }
+            if(Storage::disk('public')->exists('/Html/'.$component->code_referance.'.html')){
+                Storage::disk('public')->delete('/Html/'.$component->code_referance.'.html');
+            }
             $component->delete();
                 return response()-> json([
                     'status'=> 200,
@@ -180,8 +254,5 @@ class ComponentController extends Controller
                 'message'=>'not able to find the component'
             ]);
         }
-        
-        
-        
     }
 }

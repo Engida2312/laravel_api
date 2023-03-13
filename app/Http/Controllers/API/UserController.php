@@ -39,29 +39,15 @@ class UserController extends Controller
         if($user){
             // create token
             $token = $user->createToken('token')->plainTextToken;
-            // create cookie
-            $cookie = cookie('jwt', $token, 60*24);//1 day
     
-            return response([  
-                'id' => $user->id,
-                'status'=>200,  
-                'message'=> 'User created successfully',
-                'firstname' => $user->firstname,
-                'lastname' => $user->lastname,
-                'email' => $user->email,
-                'github' => $user->github,
-                'linkedin' => $user->linkedin,
-                'token'=>$token
-            ])->withCookie($cookie);
+            // create cookie
+            $cookie = cookie('jwt', $token, 60);//1 day;
+            return response($user)->withCookie($cookie);
         }
     }
 
     public function login(Request $request){
-        $email = $request->email;
-        $password = $request->password;
-        // if(!Auth::attempt($request->only('email', 'password'))){
-        if(!Auth::attempt(['email'=> $email,  'password'=> $password]))
-        {
+        if(!Auth::attempt($request->only('email', 'password'))){
             return response([
                 'message' => 'Invalid credentials',
             ], Response::HTTP_UNAUTHORIZED);
@@ -73,29 +59,27 @@ class UserController extends Controller
         $token = $user->createToken('token')->plainTextToken;
 
         // create cookie
-        $cookie = cookie('jwt', $token, 60*24);//1 day
-
-        return response([   
-            'message'=> 'success',
-            'id' => $user->id,
-            'status'=>200,  
-            'firstname' => $user->firstname,
-            'lastname' => $user->lastname,
-            'email' => $user->email,
-            'github' => $user->github,
-            'linkedin' => $user->linkedin,
-            'role' => $user->role,
-            'token'=>$token,
-        ])->withCookie($cookie);
+        $cookie = cookie('jwt', $token, 60);//1 day;
+        return response($user)->withCookie($cookie);
     }
 
     public function user(){
         return Auth::user();
     }
     public function users(){
-        return User::all();
+        $numOfUsers = User::count();
+        $numOfPages = $numOfUsers / 10 ;
+        return response()->json([
+            'users'=>User::all(),
+            'totalUsers' => $numOfUsers,
+            'numOfPages' => $numOfPages,
+        ]);
     }
-
+    // single user
+    public function singleUser($id){
+        $user = User::find($id);
+        return response()->json($user);
+    }
     public function logout(Request $request){
         $cookie = Cookie::forget('jwt');
         return response([
@@ -131,42 +115,33 @@ class UserController extends Controller
         //     'github'=>'required|email|max:191',
         //     'linkedin'=>'required|email|max:191',
         //     'email'=>'required|email|max:191',
-        //     // 'phone'=>'required|max:10|min:10',
+            
         // ]);
 
-        // if($validator->fails())
-        // {
-        //     return response()->json([
-        //         'status'=> 422,
-        //         'validationErrors'=>  $validator->messages(),
-        //     ]);
-        // }
-        // else
-        // {
+        $data = User::find($id);
+        if($data)
+        {
+            $data->firstname= $request->input('firstname');
+            $data->lastname= $request->input('lastname');
+            $data->github= $request->input('github');
+            $data->linkedin= $request->input('linkedin');
+            // $data->password= $request->input('password');
+            $data->email= $request->input('email');
+            
+            $data->update();
 
-            $data = User::find($id);
-            if($data)
-            {
-                $data->firstname= $request->input('firstname');
-                $data->lastname= $request->input('lastname');
-                $data->github= $request->input('github');
-                $data->linkedin= $request->input('linkedin');
-                // $data->password= $request->input('password');
-                $data->email= $request->input('email');
-                $data->update();
-
-                return response()->json([
-                    'status'=> 200,
-                    'message'=>'User Updated Successfully',
-                ]);
-            }
-            else
-            {
-                return response()->json([
-                    'status'=> 404,
-                    'message' => 'No user ID Found',
-                ]);
-            }
+            return response()->json([
+                'status'=> 200,
+                'message'=>'User Updated Successfully',
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'status'=> 404,
+                'message' => 'No user ID Found',
+            ]);
         }
     }
-// }
+    
+}
