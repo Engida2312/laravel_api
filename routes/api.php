@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\ComponentController;
+use App\Http\Controllers\UserInteractionController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
@@ -61,4 +62,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 /////avatar route
 Route::get('/upload/{id}', [AvatarController::class, 'view']);
 Route::post('/upload/{id}', [AvatarController::class, 'store']);
-Route::put('/uploadImage', [AvatarController::class, 'uploadeImage']);
+
+//user Interaction 
+Route::put('/user/interaction', [UserInteractionController::class, 'store']);
