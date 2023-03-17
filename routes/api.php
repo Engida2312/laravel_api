@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\API\ComponentController;
+use App\Http\Controllers\CommentController;
+
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\DashboardController;
@@ -63,8 +65,9 @@ Route::put('/uploadImage', [AvatarController::class, 'uploadeImage']);
 
 
 ///comment
-Route::prefix('components/{componentId}')->group(function () {
-    Route::get('comments', 'CommentController@index');
-    Route::post('comments/{id}', 'CommentController@store');
-});
+ Route::post('/comments/add', [CommentController::class, 'store']);
+ Route::get('/comments/{id}', [CommentController::class, 'index']);
+
+ 
+
 
