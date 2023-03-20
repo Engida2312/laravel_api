@@ -27,7 +27,10 @@ class User extends Authenticatable
         'linkedin',
         'role',
     ];
-
+    public function likes()
+    {
+        return $this->hasMany(Likes::class);
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

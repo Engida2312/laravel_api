@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\ComponentController;
 use App\Http\Controllers\UserInteractionController;
+use App\Http\Controllers\LikesController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\DashboardController;
@@ -30,8 +31,10 @@ Route::get('/singleUser-component/{id}', [ComponentController::class, 'singleUse
 Route::get('/component/code/{id}', [ComponentController::class, 'getCode']);
 Route::put('/update-component/{id}', [ComponentController::class, 'updateComponent']);
 Route::put('/update-componentview/{id}', [ComponentController::class, 'updateComponentview']);
-Route::put('/update-componentlike/{id}', [ComponentController::class, 'updateComponentlike']);
+Route::post('/update-componentlike', [LikesController::class, 'create']);
 Route::delete('/delete-component/{id}', [ComponentController::class, 'deleteComponent']);
+
+Route::get('/userlike/{id}/components', [LikesController::class, 'getUserLikedComponent']);
 //category route
 Route::get('/category', [CategoryController::class, 'getCategory']);
 Route::post('/add-category', [CategoryController::class, 'store']);
@@ -64,3 +67,4 @@ Route::post('/upload/{id}', [AvatarController::class, 'store']);
 //user Interaction 
 Route::post('/user/interaction', [UserInteractionController::class, 'store']);
 Route::get('/singelUser/interaction/{id}', [UserInteractionController::class, 'singleUserInteraction']);
+Route::get('/singelUser/recommendation/{id}', [UserInteractionController::class, 'singleUserRecommendation']);

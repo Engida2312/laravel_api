@@ -32,14 +32,13 @@ class ComponentController extends Controller
             'user_id'=> 'required',
             'name' => ['required', 'min:3'],
             'code_referance',
-            'discription',
             'viewes',
             'likes'
         ]);
        
         $fileName = time(). $formFields['name']. $formFields['user_id'];
         $string = str_replace(' ', '', $fileName);
-        $formFields['discription'] =  '';
+        // $formFields['discription'] =  '';
         $formFields['code_referance'] =  $string;
         $formFields['viewes'] = 0;
         $formFields['likes'] = 0;
@@ -47,7 +46,7 @@ class ComponentController extends Controller
         $component->category_id =  $formFields['category_id'];
         $component->user_id =  $formFields['user_id'];
         $component->code_referance =   $formFields['code_referance'];
-        $component->discription =  $formFields['discription'];
+        $component->discription =  $request->input('discription');
         $component->viewes =  $formFields['viewes'];
         $component->name =  $formFields['name'];
         $component->likes =  $formFields['likes'];
@@ -255,4 +254,5 @@ class ComponentController extends Controller
             ]);
         }
     }
+   
 }
