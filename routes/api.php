@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\API\ComponentController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ImageController;
+
 
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\UserController;
@@ -58,10 +60,13 @@ Route::middleware('auth:sanctum')->group(function(){
 });
 
 
-/////avatar route
-Route::get('/upload/{id}', [AvatarController::class, 'view']);
-Route::post('/upload/{id}', [AvatarController::class, 'store']);
-Route::put('/uploadImage', [AvatarController::class, 'uploadeImage']);
+/////image route
+Route::post('/uploadImage/{id}', [ImageController::class, 'storeUserImage']);
+Route::get('/userImage/{id}', [ImageController::class, 'getImage']);
+
+
+
+
 
 
 ///comment
