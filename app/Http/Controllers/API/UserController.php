@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Cookie;
 use Symfony\Component\CssSelector\Node\FunctionNode;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -87,36 +88,36 @@ class UserController extends Controller
         ])->withCookie($cookie);
     }
 
-    public function edit($id)
-    {
-        $data = User::find($id);
-        if($data)
-        {
-            return response()->json([
-                'status'=> 200,
-                'user' => $data,
-            ]);
-        }
-        else
-        {
-            return response()->json([
-                'status'=> 404,
-                'message' => 'No User ID Found',
-            ]);
-        }
+    // public function edit($id)
+    // {
+    //     $data = User::find($id);
+    //     if($data)
+    //     {
+    //         return response()->json([
+    //             'status'=> 200,
+    //             'user' => $data,
+    //         ]);
+    //     }
+    //     else
+    //     {
+    //         return response()->json([
+    //             'status'=> 404,
+    //             'message' => 'No User ID Found',
+    //         ]);
+    //     }
 
-    }
+    // }
 
     public function update(Request $request, $id)
     {
-        // $validator = Validator::make($request->all(),[
-        //     'firstname'=>'required|max:191',
-        //     'lastname'=>'required|max:191',
-        //     'github'=>'required|email|max:191',
-        //     'linkedin'=>'required|email|max:191',
-        //     'email'=>'required|email|max:191',
+        $validator = Validator::make($request->all(),[
+            'firstname'=>'required|max:191',
+            'lastname'=>'required|max:191',
+            'github'=>'required|email|max:191',
+            'linkedin'=>'required|email|max:191',
+            'email'=>'required|email|max:191',
             
-        // ]);
+        ]);
 
         $data = User::find($id);
         if($data)
@@ -142,6 +143,23 @@ class UserController extends Controller
                 'message' => 'No user ID Found',
             ]);
         }
+        if ($request->hasFile('uimage')) {
+            $file = $request->file('uimage');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images'), $filename);
+            $data->uimage = $filename;
+        }
+
+        $data->save();
+        
+        return response()->json([
+            'status' => 200,
+            'message' => 'Profile updated successfully'
+        ]);
     }
+
+    
+
+    
     
 }

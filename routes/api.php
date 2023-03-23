@@ -3,6 +3,10 @@
 use App\Http\Controllers\API\ComponentController;
 use App\Http\Controllers\UserInteractionController;
 use App\Http\Controllers\LikesController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ImageController;
+
+
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\DashboardController;
@@ -68,3 +72,19 @@ Route::post('/upload/{id}', [AvatarController::class, 'store']);
 Route::post('/user/interaction', [UserInteractionController::class, 'store']);
 Route::get('/singelUser/interaction/{id}', [UserInteractionController::class, 'singleUserInteraction']);
 Route::get('/singelUser/recommendation/{id}', [UserInteractionController::class, 'singleUserRecommendation']);
+/////image route
+Route::post('/uploadImage/{id}', [ImageController::class, 'storeUserImage']);
+Route::get('/userImage/{id}', [ImageController::class, 'getImage']);
+
+
+
+
+
+
+///comment
+ Route::post('/comments/add', [CommentController::class, 'store']);
+ Route::get('/comments/{id}', [CommentController::class, 'index']);
+
+ 
+
+
