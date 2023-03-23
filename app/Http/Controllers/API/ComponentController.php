@@ -11,7 +11,7 @@ class ComponentController extends Controller
 {
     public function getComponent(){
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
-        ->get(['component.id','component.category_id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
+        ->get(['component.id','component.user_id','component.category_id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
         'component.created_at','component.updated_at', 'users.firstname']);
    
         $numOfComponents = Component::count();
@@ -66,7 +66,7 @@ class ComponentController extends Controller
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
         ->where('component.id',$id)
-        ->get(['component.id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
+        ->get(['component.id','component.user_id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
         'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
 
         if($component){
@@ -144,7 +144,7 @@ class ComponentController extends Controller
         ->join('category', 'category.id', '=', 'component.category_id')
         ->where('component.category_id',$id)
         ->orderBy('component.viewes', 'desc')
-        ->get(['component.id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
+        ->get(['component.id','component.user_id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
         'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
         return response()-> json([
             'status'=> 200,
@@ -156,7 +156,7 @@ class ComponentController extends Controller
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
         ->where('component.user_id',$id)
-        ->get(['component.id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
+        ->get(['component.id','component.user_id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
         'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
         return response()-> json([
             'status'=> 200,

@@ -35,10 +35,10 @@ class ImageController extends Controller
                 
             }elseif (Storage::disk('public')->exists('images/'.$oldFile->filename)) {
                 Storage::disk('public')->delete('images/'.$oldFile->filename);
-                Storage::disk('public')->put('images/' . $filename, $request->input($image));
+                Storage::disk('public')->put('images/' . $filename, file_get_contents($image));
                 $oldFile->filename = $filename;
             }else{
-                Storage::disk('public')->put('images/' . $filename, $request->input($image));
+                Storage::disk('public')->put('images/' . $filename, file_get_contents($image));
                 $oldFile->filename = $filename;
         
             }
@@ -48,7 +48,7 @@ class ImageController extends Controller
         }
        
     }else{
-        Storage::disk('public')->put('images/' . $filename, $request->input($image));
+        Storage::disk('public')->put('images/' . $filename, file_get_contents($image));
         $userImage = new UserImage;
         $userImage->filename = $filename;
         $userImage->user_id = $id;
@@ -72,7 +72,8 @@ public function getImage($id){
         $filePath = Storage::disk('public')->get('images/'.$image_id);
         $response = new Response($filePath, 200);
         $response->header('Content-Type', 'image/jpeg');
-
+        
+        // return Storage::url('images/'.$image_id);
         return $response;
     }else{
         return response()->json(['message' => 'file not found'], 500);
