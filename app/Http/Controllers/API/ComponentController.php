@@ -11,8 +11,9 @@ class ComponentController extends Controller
 {
     public function getComponent(){
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
-        ->get(['component.id','component.user_id','component.category_id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
-        'component.created_at','component.updated_at', 'users.firstname']);
+        ->leftJoin('user_images', 'component.user_id', '=', 'user_images.user_id')
+        ->select('component.*', 'user_images.filename')
+         ->get();
    
         $numOfComponents = Component::count();
         $numOfPages = $numOfComponents / 10 ;
@@ -64,10 +65,11 @@ class ComponentController extends Controller
     }
     public function singleComponent($id){
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
+        ->leftJoin('user_images', 'component.user_id', '=', 'user_images.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
         ->where('component.id',$id)
-        ->get(['component.id','component.user_id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
-        'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
+        ->select('component.*','users.firstname', 'category.title', 'user_images.filename')
+        ->get();
 
         if($component){
             // error_log("here".$component[0]->code_referance);
@@ -141,11 +143,12 @@ class ComponentController extends Controller
 
     public function singleCategoryComponent($id){
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
+        ->leftJoin('user_images', 'component.user_id', '=', 'user_images.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
         ->where('component.category_id',$id)
         ->orderBy('component.viewes', 'desc')
-        ->get(['component.id','component.user_id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
-        'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
+        ->select('component.*','users.firstname', 'category.title', 'user_images.filename')
+        ->get();
         return response()-> json([
             'status'=> 200,
             'message'=> $component,
@@ -154,10 +157,11 @@ class ComponentController extends Controller
 
     public function singleUserComponent($id){
         $component = Component::join('users', 'users.id', '=', 'component.user_id')
+        ->leftJoin('user_images', 'component.user_id', '=', 'user_images.user_id')
         ->join('category', 'category.id', '=', 'component.category_id')
         ->where('component.user_id',$id)
-        ->get(['component.id','component.user_id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
-        'component.created_at','component.updated_at', 'users.firstname', 'category.title']);
+        ->select('component.*','users.firstname', 'category.title', 'user_images.filename')
+        ->get();
         return response()-> json([
             'status'=> 200,
             'message'=> $component,

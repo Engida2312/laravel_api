@@ -29,8 +29,16 @@ class LikesController extends Controller
         }
 
         // Get components the user liked
-        $liked_items = $user->likes()->with('component')->get()->pluck('component');
-        $liked_ids = $user->likes()->join('component', 'likes.component_id', '=', 'component.id')->select('component.id')->get()->pluck('id');
+        $liked_items = $user->likes()
+                    ->join('component', 'likes.component_id', '=', 'component.id')
+                    ->join('users', 'users.id', '=', 'component.user_id')
+                    ->leftJoin('user_images', 'component.user_id', '=', 'user_images.user_id')
+                    ->select('component.*','users.firstname','user_images.filename')
+                    ->get();
+        $liked_ids = $user->likes()
+                    ->join('component', 'likes.component_id', '=', 'component.id')
+                    ->select('component.id')
+                    ->get()->pluck('id');
 
         return response()->json([
             'likedComponents' => $liked_items,

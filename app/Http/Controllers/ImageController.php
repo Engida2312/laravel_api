@@ -64,7 +64,7 @@ class ImageController extends Controller
 public function getImage($id){
     $user = UserImage::where('user_id', $id)->first();
     if(!$user){
-        return response()->json(['message' => 'user not found'], 400);
+        return response()->json(['message' => 'user image not found'], 400);
     }
     $image_id = $user->filename;
 
@@ -73,10 +73,10 @@ public function getImage($id){
         $response = new Response($filePath, 200);
         $response->header('Content-Type', 'image/jpeg');
         
-        // return Storage::url('images/'.$image_id);
-        return $response;
+        return Storage::url('images/'.$image_id);
+        // return $response;
     }else{
-        return response()->json(['message' => 'file not found'], 500);
+        return response()->json([], 500);
     }
   
   
