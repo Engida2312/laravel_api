@@ -11,9 +11,11 @@ use App\Models\Component;
 class DashboardController extends Controller{
     public function limitedComponents(Request $request){
        $components = Component::join('users', 'users.id', '=', 'component.user_id')
+       ->leftJoin('user_images', 'component.user_id', '=', 'user_images.user_id')
+        ->select('component.*','users.firstname', 'user_images.filename')
         ->orderBy('component.viewes', 'desc')
-        ->get(['component.id','component.category_id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
-        'component.created_at','component.updated_at', 'users.firstname']);
+        ->get(); 
+        
         
         return $components;
     }
@@ -21,8 +23,9 @@ class DashboardController extends Controller{
     public function dashboard(Request $request){
         $users = User::all();
         $components = Component::join('users', 'users.id', '=', 'component.user_id')
-        ->get(['component.id','component.category_id','component.name','component.discription','component.viewes','component.likes','component.code_referance',
-        'component.created_at','component.updated_at', 'users.firstname']);
+        ->leftJoin('user_images', 'component.user_id', '=', 'user_images.user_id')
+        ->select('component.*','users.firstname', 'user_images.filename')
+        ->get();
         $userCount = User::count();
         $categoryCount = Category::count();
         $componentCount = Component::count();

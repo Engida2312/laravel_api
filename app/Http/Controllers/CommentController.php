@@ -36,7 +36,9 @@ class CommentController extends Controller
     public function index($id)
     {
         // $comments = Comment::where('component_id', $id)->get();
-        $comments = Comment::with('user')->where('component_id', $id)->get();
+        $comments = Comment::with('user')->where('component_id', $id)
+        ->leftJoin('user_images', 'comments.user_id', '=', 'user_images.user_id')
+        ->get();
 
         foreach ($comments as $comment) {
             $comment->user_data = $comment->user;
