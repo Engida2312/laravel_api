@@ -61,26 +61,33 @@ class UserInteractionController extends Controller
         
         $user_id = intval($id);
         $interaction  = UserInteraction::where('user_id', $user_id)->value('interactions');
+        $userInteractions = UserInteraction::where('user_id', $user_id)->get();
         if (empty($interaction)) {
             return response()->json(['message' => 'No previous interactions found for this user']);
         }
           // extract component IDs from interaction
         $componentIds = explode(',', $interaction);
         $componentIds = array_map('intval', $componentIds);
-        $component = Component::all();
-        
+        // $component = Component::whereIn('id', $componentIds)->get();
+
+         // Get all the components that the user hasn't interacted with yet
+         $unseenComponents = Component::whereNotIn('id', $componentIds)->get();
+
         try {
-            $args = ['id'=>$componentIds, 'component'=>$component];
-            $process = new Process(['ls', '-lsa']);
-            $process->run();
+          $recommendedComponents = collect();
+        foreach ($unseenComponents as $component) {
+            $similarity = $this->computeSimilarity($component, $userInteractions);
+            $recommendedComponents->put($component->id, $similarity);
+        }
 
-            // executes after the command finishes
-            if (!$process->isSuccessful()) {
-                throw new ProcessFailedException($process);
-            }
+        // Sort the recommended components by similarity and return the top 5
+        $recommendedComponents = $recommendedComponents->sortByDesc(function ($similarity) {
+            return $similarity;
+        })->take(5);
 
-            echo $process->getOutput();
-     
+        // Get the details of the top recommended components
+        $components = Component::whereIn('id', $recommendedComponents->keys()->toArray())->get();
+
 
         } catch (\Throwable $th) {
            return response()->json(['message'=>'da'.$th]);
@@ -90,8 +97,20 @@ class UserInteractionController extends Controller
 
         return response()->json([
             'status'=> 200,
-            'message'=>'fd'
+            'message'=> $components
         ]);
+    }
+    private function computeSimilarity($component, $userInteractions)
+    {
+        // Compute the similarity between the component and the components the user has interacted with
+        $similarity = 0;
+        foreach ($userInteractions as $interaction) {
+            $componentIds = explode(',', $interaction->interactions);
+            if (in_array($component->id, $componentIds)) {
+                $similarity += similar_text($component->description, $interaction->component->description);
+            }
+        }
+        return $similarity;
     }
 
 }
